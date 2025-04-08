@@ -3,7 +3,8 @@
 #include <iostream>
 #include <format>
 #include "game_controller/game_controller.hpp"
-#include "fight_ring.hpp"
+#include "entity/fight_ring.hpp"
+#include "entity/point.h"
 
 
 
@@ -33,8 +34,13 @@ int main()
     constexpr uint32_t screenWidth = screenHeight * aspectRatio;
     Nothofagus::Canvas canvas({screenWidth, screenHeight}, "Beauchef Fighter", {0.7, 0.7, 0.7}, 6);
 
-    std::unique_ptr<bf::FightRing> fightRing = std::make_unique<bf::FightRing>();
-    fightRing->addToCanvas(canvas);
+    bf::FightRing fightRing;
+    fightRing.setDimensions(screenWidth - 10, screenHeight - 20);
+    fightRing.setPosition({screenWidth / 2.0f, screenHeight / 2.0f});
+    fightRing.addToCanvas(canvas);
+
+    bf::Point point;
+    point.setPosition({1, 1}).addToCanvas(canvas);
 
     bf::GameController gameController;
 
