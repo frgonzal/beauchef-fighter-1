@@ -2,9 +2,11 @@
 #include <nothofagus.h>
 #include <iostream>
 #include <format>
-#include "game_controller/game_controller.hpp"
-#include "entity/fight_ring.hpp"
-#include "entity/point.h"
+#include "game_controller/game_controller.h"
+#include "entity/fight_ring.h"
+#include "entity/box.h"
+#include "entity/fighter/fighter.h"
+#include "entity/fighter/state/fighter_standing_state.h"
 
 
 
@@ -34,29 +36,33 @@ int main()
     constexpr uint32_t screenWidth = screenHeight * aspectRatio;
     Nothofagus::Canvas canvas({screenWidth, screenHeight}, "Beauchef Fighter", {0.7, 0.7, 0.7}, 6);
 
-    bf::FightRing fightRing;
-    fightRing.setDimensions(screenWidth - 10, screenHeight - 20);
-    fightRing.setPosition({screenWidth / 2.0f, screenHeight / 2.0f});
+    bf::FightRing fightRing({screenWidth / 2.0f, screenHeight / 3.0f + 10}, screenWidth - 20, 2 * screenHeight / 3.0f);
     fightRing.addToCanvas(canvas);
-
-    bf::Point point;
-    point.setPosition({1, 1}).addToCanvas(canvas);
 
     bf::GameController gameController;
 
+    bf::Fighter fighter1;
+    fighter1.setPosition({screenWidth / 2.0f, screenHeight / 2.0f});
+    fighter1.addToCanvas(canvas);
+
+
+    bf::Box box1({screenWidth / 2.0f, screenHeight / 2.0f}, 5, 10);
+    box1.setColor(bf::Colors::blue);
+    box1.addToCanvas(canvas);
+
     auto update = [&](float dt)
     {
-        // ImGui::Begin("Beauchef Fighter");
-        // ImGui::Text(std::format("Time (eft: {:.2f}", gameController.getTimeLeft()).c_str());
-        // ImGui::Text(std::format("dt: {:.2f}", dt).c_str());
-        // ImGui::End();
+        ImGui::Begin("Beauchef Fighter");
+        ImGui::End();
+
+        fighter1.update(canvas, dt);
 
         if (!gameController.isRunning()) return;
         gameController.update(dt);
     };
 
     Nothofagus::Controller controller;
-    // controller.registerAction({Nothofagus::Key::ESCAPE, Nothofagus::DiscreteTrigger::Press}, [&]() { canvas.close(); });
+
     controller.registerAction({Nothofagus::Key::SPACE, Nothofagus::DiscreteTrigger::Press}, [&]() { soundPlayer.play(); });
     
     canvas.run(update, controller);

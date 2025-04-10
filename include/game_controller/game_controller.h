@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
-#include "game_controller/states/game_state.hpp"
-
+#include "game_controller/states/game_state.h"
 
 
 namespace bf

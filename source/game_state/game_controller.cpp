@@ -1,11 +1,14 @@
-#include "game_controller/game_controller.hpp"
-#include "game_controller/states/running_state.hpp"
+#include "game_controller/game_controller.h"
+#include "game_controller/states/running_state.h"
 
 
 namespace bf
 {
     GameController::GameController()
-        : mCurrentState(std::make_unique<RunningState>(*this, 30e3f)) {}
+    {
+        mCurrentState = std::make_unique<RunningState>(30e3f);
+        mCurrentState->setGameController(this);
+    }
 
     void GameController::update(float deltaTime)
     {

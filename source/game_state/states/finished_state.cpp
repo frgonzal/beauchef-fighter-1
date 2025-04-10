@@ -1,14 +1,14 @@
-#include "game_controller/states/finished_state.hpp"
+#include "game_controller/states/finished_state.h"
+#include <stdexcept>
 
 
 
 namespace bf
 {
-    FinishedState::FinishedState(GameController& gameController) 
-        : mGameController(gameController) {}
-
     void FinishedState::update(float deltaTime)
-    { } 
+    { 
+        throw std::runtime_error("Game has finished. No updates are allowed.");
+    } 
 
     bool FinishedState::isRunning() const
     {

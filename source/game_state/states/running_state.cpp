@@ -1,19 +1,19 @@
-#include "game_controller/states/running_state.hpp"
-#include "game_controller/states/finished_state.hpp"
+#include "game_controller/states/running_state.h"
+#include "game_controller/states/finished_state.h"
 
 
 
 namespace bf
 {
-    RunningState::RunningState(GameController& gameController, float timeLeftInMilliseconds)
-        : mGameController(gameController), mTimeLeft(timeLeftInMilliseconds) {}
+    RunningState::RunningState(float timeLeftInMilliseconds) : 
+        mTimeLeft(timeLeftInMilliseconds) {}
 
     void RunningState::update(float deltaTime)
     {
         mTimeLeft -= deltaTime;
         if (mTimeLeft <= 0.0f)
         {
-            mGameController.setState(std::make_unique<FinishedState>(mGameController));
+            mGameController->setState(std::make_unique<FinishedState>());
         }
     } 
 

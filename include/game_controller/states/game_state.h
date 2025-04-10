@@ -1,8 +1,9 @@
 #pragma once
 
-
 namespace bf
 {
+    class GameController;
+
     class GameState
     {
     public:
@@ -12,7 +13,13 @@ namespace bf
         virtual bool isRunning() const = 0;
         virtual bool hasFinished() const = 0;
         virtual float getTimeLeft() const = 0;
+
+        void setGameController(GameController* gameController)
+        {
+            mGameController = gameController;
+        }
+
+    protected:
+        GameController* mGameController;
     };
 }
-
-
