@@ -1,4 +1,4 @@
-#include "entity/box.h"
+#include "entity/box/box.h"
 #include <nothofagus.h>
 #include <colors.h>
 #include <iostream>

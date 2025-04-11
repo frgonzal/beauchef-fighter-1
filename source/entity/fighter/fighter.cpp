@@ -2,6 +2,7 @@
 #include "entity/fighter/state/fighter_standing_state.h"
 #include <iostream>
 #include "colors.h"
+#include <nothofagus.h>
 
 
 namespace bf
@@ -15,7 +16,7 @@ namespace bf
         }
 
         mCurrentState->setFighter(this);
-        mVelocity = {0.01f, 0.0f};
+        // mVelocity = {0.01f, 0.0f};
     }
 
     void Fighter::setState(std::unique_ptr<FighterState> newState)
@@ -49,5 +50,22 @@ namespace bf
         {
             box->setPosition(mPosition + offset);
         }
+    }
+
+
+    Fighter& Fighter::registerActions(Nothofagus::Controller &controller, FighterControls controls)
+    {
+        const FighterKeys actionKeys = FighterKeys::getKeys(controls);
+        controller.registerAction({actionKeys.moveLeft, Nothofagus::DiscreteTrigger::Press},    [this]() { mVelocity.x -= mMaxSpeed;});
+        controller.registerAction({actionKeys.moveLeft, Nothofagus::DiscreteTrigger::Release},  [this]() { mVelocity.x += mMaxSpeed;});
+        controller.registerAction({actionKeys.moveRight, Nothofagus::DiscreteTrigger::Press},   [this]() { mVelocity.x += mMaxSpeed;});
+        controller.registerAction({actionKeys.moveRight, Nothofagus::DiscreteTrigger::Release}, [this]() { mVelocity.x -= mMaxSpeed;});
+
+        controller.registerAction({actionKeys.moveUp, Nothofagus::DiscreteTrigger::Press},     [this]() { mVelocity.y += mMaxSpeed;});
+        controller.registerAction({actionKeys.moveUp, Nothofagus::DiscreteTrigger::Release},   [this]() { mVelocity.y -= mMaxSpeed;});
+        controller.registerAction({actionKeys.moveDown, Nothofagus::DiscreteTrigger::Press},   [this]() { mVelocity.y -= mMaxSpeed;});
+        controller.registerAction({actionKeys.moveDown, Nothofagus::DiscreteTrigger::Release}, [this]() { mVelocity.y += mMaxSpeed;});
+
+        return *this;
     }
 }

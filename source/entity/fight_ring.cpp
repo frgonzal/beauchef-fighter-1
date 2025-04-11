@@ -26,4 +26,9 @@ namespace bf
     {
         throw std::runtime_error("Not implemented yet.");
     }
+
+    void FightRing::moveEntityInsideLimits(Fighter& fighter)
+    {
+        throw std::runtime_error("Not implemented yet.");
+    }
 }

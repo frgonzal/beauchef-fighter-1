@@ -4,7 +4,7 @@
 #include <format>
 #include "game_controller/game_controller.h"
 #include "entity/fight_ring.h"
-#include "entity/box.h"
+#include "entity/box/box.h"
 #include "entity/fighter/fighter.h"
 #include "entity/fighter/state/fighter_standing_state.h"
 
@@ -64,6 +64,7 @@ int main()
     Nothofagus::Controller controller;
 
     controller.registerAction({Nothofagus::Key::SPACE, Nothofagus::DiscreteTrigger::Press}, [&]() { soundPlayer.play(); });
+    fighter1.registerActions(controller, bf::FighterControls::AWSD);
     
     canvas.run(update, controller);
 

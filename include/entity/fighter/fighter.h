@@ -2,18 +2,15 @@
 #include <memory>
 #include <nothofagus.h>
 #include "entity/drawable.h"
-#include "entity/box.h"
+#include "entity/box/box.h"
 #include "colors.h"
 #include "entity/fighter/state/fighter_state.h"
+#include "entity/fighter/fighter_keys.h"
 
 
 namespace bf
 {
-    enum FighterControls
-    {
-        AWSD,
-        ARROWS,
-    };
+
 
 
     class Fighter : public Drawable
@@ -28,12 +25,14 @@ namespace bf
         void update(Nothofagus::Canvas& canvas, float deltaTime) override;
 
         void setPosition(const glm::vec2& position);
+        Fighter& registerActions(Nothofagus::Controller &controller, FighterControls controls);
         // void setVelocity(const glm::vec2& velocity);
         // void movePosition(const glm::vec2& delta);
 
     private:
-        glm::vec2 mPosition;
-        glm::vec2 mVelocity;
+        float mMaxSpeed = 1.0f / 32.0f;
+        glm::vec2 mPosition = {0, 0};
+        glm::vec2 mVelocity = {0, 0};
         glm::vec4 mColor = Colors::cyan;
         std::unique_ptr<FighterState> mCurrentState;
 
