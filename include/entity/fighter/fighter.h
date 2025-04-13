@@ -6,13 +6,11 @@
 #include "colors.h"
 #include "entity/fighter/state/fighter_state.h"
 #include "entity/fighter/fighter_keys.h"
+#include <rusty_audio.h>
 
 
 namespace bf
 {
-
-
-
     class Fighter : public Drawable
     {
     public:
@@ -26,15 +24,30 @@ namespace bf
 
         void setPosition(const glm::vec2& position);
         Fighter& registerActions(Nothofagus::Controller &controller, FighterControls controls);
-        // void setVelocity(const glm::vec2& velocity);
-        // void movePosition(const glm::vec2& delta);
+
+        void moveInsideLimits(const glm::vec2& bottomLeftLimit, const glm::vec2& topRightLimit);
+
+        const glm::vec2& position() const;
+
+        const FighterState *currentState() const;
+
+        void addVelocity(const glm::vec2& velocity);
+
+        void setTarget(Fighter* target);
+
+        Fighter* target();
+
+        glm::vec2 &viewDirection();
+
+        void updateTargetDirection();
 
     private:
         float mMaxSpeed = 1.0f / 32.0f;
-        glm::vec2 mPosition = {0, 0};
-        glm::vec2 mVelocity = {0, 0};
         glm::vec4 mColor = Colors::cyan;
         std::unique_ptr<FighterState> mCurrentState;
+
+        Fighter *mTarget = nullptr;
+        glm::vec2 mViewDirection = {1, 0};
 
         Box mHead  = Box({0, 0}, 4.0, 4.0);
         Box mNeck  = Box({0, 0}, 2.0, 3.0);
@@ -59,5 +72,10 @@ namespace bf
             {&mLeftLeg, {-1.1, 0}},
             {&mRightLeg, {1.1, 0}}
         };
+
+        RustyAudio::Buffer attackSoundBuffer;
+        RustyAudio::Player attackSoundPlayer;
+
+        void initSoundPlayer();
     };
 }

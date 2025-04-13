@@ -1,4 +1,4 @@
-#include "entity/fight_ring.h"
+#include "entity/static/fight_ring.h"
 #include <nothofagus.h>
 #include <colors.h>
 #include <iostream>
@@ -29,6 +29,6 @@ namespace bf
 
     void FightRing::moveEntityInsideLimits(Fighter& fighter)
     {
-        throw std::runtime_error("Not implemented yet.");
+        fighter.moveInsideLimits(mInnerBox.getBottomLeft(), mInnerBox.getTopRight());
     }
 }

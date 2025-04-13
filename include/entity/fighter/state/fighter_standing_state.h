@@ -9,9 +9,16 @@ namespace bf
     {
     public:
         FighterStandingState() = default;
+        FighterStandingState(FighterState *prevState);
         ~FighterStandingState() = default;
 
-        // void moveToLeft(float deltaTime);
         void update(float deltaTime) override;
+
+        bool isStanding() const override;
+        bool isMoving() const override;
+        bool isAttacking() const override;
+        void attack() override;
+        void addVelocity(const glm::vec2 &velocity) override;
+
     };
 }

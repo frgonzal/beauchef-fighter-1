@@ -1,6 +1,6 @@
 #pragma once
 #include "entity/drawable.h"
-#include "box/box.h"
+#include "entity/box/box.h"
 #include <nothofagus.h>
 #include "entity/fighter/fighter.h"
 

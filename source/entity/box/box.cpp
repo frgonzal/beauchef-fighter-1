@@ -3,6 +3,8 @@
 #include <colors.h>
 #include <iostream>
 #include <format>
+#include "entity/collidable.h"
+#include "entity/box/compound_box.h"
 
 
 
@@ -47,12 +49,9 @@ namespace bf
 
     Box& Box::setPosition(const glm::vec2& center)
     {
-        float angle = mAngle;
-        setAngle(0);
         glm::vec2 halfSize = getCenter() - mBottomLeft;
         mBottomLeft = center - halfSize;
         mTopRight = center + halfSize;
-        setAngle(angle);
         return *this;
     }
 
@@ -69,32 +68,29 @@ namespace bf
         return *this;
     }
 
-    bool Box::collides(const Box &other) const
+    bool Box::collides(const Collidable *other) const
     {
-        return mBottomLeft.x < other.mTopRight.x &&
-               mTopRight.x > other.mBottomLeft.x &&
-               mBottomLeft.y < other.mTopRight.y &&
-               mTopRight.y > other.mBottomLeft.y;
+        return other->collidesWithBox(this);
     }
 
-
-
-    bool Box::collides(const std::vector<Box> &points) const
+    bool Box::collidesWithBox(const Box *other) const
     {
-        for (const auto &point : points)
+        return mBottomLeft.x < other->mTopRight.x &&
+               mTopRight.x > other->mBottomLeft.x &&
+               mBottomLeft.y < other->mTopRight.y &&
+               mTopRight.y > other->mBottomLeft.y;
+    }
+
+    bool Box::collidesWithCompoundBox(const CompoundBox *compoundBox) const
+    {
+        for (const Box &other : compoundBox->getBoxes())
         {
-            if (collides(point))
+            if (other.collidesWithBox(this))
             {
                 return true;
             }
         }
         return false;
-    }
-
-    Box& Box::setAngle(float angle)
-    {
-        mAngle = angle;
-        return *this;
     }
 
     glm::vec2 Box::getWidth() const
@@ -121,5 +117,17 @@ namespace bf
     {
         mColor = color;
         return *this;
+    }
+
+    void Box::reflectOverYAxis()
+    {
+        // its a box, so no need to reflect over its own axis
+    }
+
+    void Box::reflectOverYAxis(const float xPosition)
+    {
+        float xLeft = mBottomLeft.x;
+        mBottomLeft.x = 2 * xPosition - mTopRight.x;
+        mTopRight.x = 2 * xPosition - xLeft;
     }
 }

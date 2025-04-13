@@ -20,10 +20,27 @@ namespace bf
         Nothofagus::Key moveUp;
         Nothofagus::Key moveDown;
 
+        Nothofagus::Key attack;
+        Nothofagus::Key block;
+        Nothofagus::Key jump;
+
         static FighterKeys getKeys(FighterControls controls);
 
     private:
-        FighterKeys(Nothofagus::Key moveLeft, Nothofagus::Key moveRight, Nothofagus::Key moveUp, Nothofagus::Key moveDown) :
-            moveLeft(moveLeft), moveRight(moveRight), moveUp(moveUp), moveDown(moveDown) {}
+        FighterKeys(
+            Nothofagus::Key moveLeft, 
+            Nothofagus::Key moveRight, 
+            Nothofagus::Key moveUp, 
+            Nothofagus::Key moveDown, 
+            Nothofagus::Key attack,
+            Nothofagus::Key block,
+            Nothofagus::Key jump
+        ) : moveLeft(moveLeft), 
+            moveRight(moveRight), 
+            moveUp(moveUp), 
+            moveDown(moveDown), 
+            attack(attack), 
+            block(block), 
+            jump(jump) {}
     };
 }
