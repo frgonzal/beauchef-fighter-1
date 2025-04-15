@@ -19,5 +19,10 @@ namespace bf
         bool isAttacking() const override;
         void attack() override;
         void addVelocity(const glm::vec2 &velocity) override;
+
+    private:
+        const float mAnimationMillisecondsDuration = 200.0f;
+        float mAnimationTimeElapsed = mAnimationMillisecondsDuration;
+        int mCurrentLeg = 0;
     };
 }

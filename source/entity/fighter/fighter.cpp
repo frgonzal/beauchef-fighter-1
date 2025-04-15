@@ -12,6 +12,54 @@ namespace bf
     Fighter::Fighter()
         : mCurrentState(std::make_unique<FighterStandingState>())
     {
+        mViewDirection = {1, 0};
+
+        Box head  = Box({0, 0}, 4.0, 4.0);
+        Box neck  = Box({0, 0}, 2.0, 3.0);
+        Box chest = Box({0, 0}, 6.0, 15.0);
+
+        mMainBody = CompoundBox();
+        mMainBody.addBox(chest, {0, 0});
+        mMainBody.addBox(neck,  {0, 7.5 + 1.5});
+        mMainBody.addBox(head,  {0, 7.5 + 1.5 + 2.0});
+
+        mLeftLeg = CompoundBox();
+        Box leftLegBox1 = Box({0, 0}, 2.0, 5.0);
+        Box leftLegBox2 = Box({0, 0}, 2.0, 5.0);
+        Box leftLegBox3 = Box({0, 0}, 2.0, 5.0);
+        leftLegBox1.addAnimation({0, 1}, 2.0, 5.0);
+        leftLegBox2.addAnimation({0, 2}, 2.0, 5.0);
+        leftLegBox3.addAnimation({0, 3}, 2.0, 5.0);
+        mLeftLeg.addBox(leftLegBox1, {-0.5, 5})
+                .addBox(leftLegBox2, { 0.1, 0})
+                .addBox(leftLegBox3, {-0.5, -5});
+
+        mRightLeg = CompoundBox();
+        Box rightLegBox1 = Box({0, 1}, 2.0, 5.0);
+        Box rightLegBox2 = Box({0, 2}, 2.0, 5.0);
+        Box rightLegBox3 = Box({0, 3}, 2.0, 5.0);
+        rightLegBox1.addAnimation({0, 1}, 2.0, 5.0);
+        rightLegBox2.addAnimation({0, 2}, 2.0, 5.0);
+        rightLegBox3.addAnimation({0, 15}, 2.0, 5.0);
+        mRightLeg.addBox(rightLegBox1, {-0.5, 5})
+                 .addBox(rightLegBox2, { 0.1, 0})
+                 .addBox(rightLegBox3, {-0.5, -5});
+
+        mLeftArm = CompoundBox();
+        mLeftArm.addBox(Box({0, 0}, 12.0, 2.0), {0, 0});
+        mRightArm = CompoundBox();
+        mRightArm.addBox(Box({0, 0}, 12.0, 2.0), {0, 0});
+
+        mBody = {
+            {&mLeftArm, {3.0, 15 + 6.0 + 7.5}},
+            {&mRightArm, {9.0, 15 + 3.0 + 7.5}},
+
+            {&mMainBody, {0, 15 + 7.5}},
+
+            {&mLeftLeg, {-1.0, 7.5}},
+            {&mRightLeg, {2.0, 7.5}}
+        };
+
         for(auto& [box, offset] : mBody)
         {
             box->setColor(mColor);
@@ -93,6 +141,16 @@ namespace bf
         attackSoundBuffer = attackSoundBuilder.generate(Audio::sampleRate, Audio::channels);
         attackSoundPlayer.init(attackSoundBuffer);
         attackSoundPlayer.setLooping(false);
+        
+        RustyAudio::Builder stepSoundBuilder;
+        stepSoundBuilder.appendSinusoids({
+            {15, 1.0, 100.0},   // Quick, strong burst representing the impact
+            {25, 0.6, 80.0},    // Mid-frequency resonance as the foot settles
+            {40, 0.3, 60.0}     // Fading tail to simulate ground vibration
+        });
+        stepSoundBuffer = stepSoundBuilder.generate(Audio::sampleRate, Audio::channels);
+        stepSoundPlayer.init(stepSoundBuffer);
+        stepSoundPlayer.setLooping(false);
     }
 
     const glm::vec2& Fighter::position() const
@@ -140,5 +198,15 @@ namespace bf
                 }
             }
         }
+    }
+
+    IBox **Fighter::legs()
+    {
+        return mLegs;
+    }
+
+    void Fighter::playStepSound()
+    {
+        stepSoundPlayer.play();
     }
 }

@@ -24,19 +24,18 @@ namespace bf
 
     CompoundBox& CompoundBox::addBox(const Box &box, const glm::vec2& offset)
     {
-        mBoxes.emplace_back(box);
-        mOffsets.emplace_back(offset);
+        mBoxes.push_back(box);
+        mOffsets.push_back(offset);
         return *this;
     }
 
-    CompoundBox& CompoundBox::setPosition(const glm::vec2& newPosition)
+    void CompoundBox::setPosition(const glm::vec2& newPosition)
     {
         for (size_t i = 0; i < mBoxes.size(); ++i)
         {
             glm::vec2 offset = mOffsets[i];
             mBoxes[i].setPosition(newPosition + offset);
         }
-        return *this;
     }
 
     const std::vector<Box> &CompoundBox::getBoxes() const
@@ -86,5 +85,29 @@ namespace bf
     {
         mPosition.x = 2 * xPosition - mPosition.x;
         reflectOverYAxis();
+    }
+
+    void CompoundBox::setColor(const glm::vec4 &color)
+    {
+        for (Box &box : mBoxes)
+        {
+            box.setColor(color);
+        }
+    }
+
+    void CompoundBox::playAnimation()
+    {
+        for (Box &box : mBoxes)
+        {
+            box.playAnimation();
+        }
+    }
+
+    void CompoundBox::stopAnimation()
+    {
+        for (Box &box : mBoxes)
+        {
+            box.stopAnimation();
+        }
     }
 }

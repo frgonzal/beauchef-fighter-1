@@ -2,11 +2,14 @@
 #include <memory>
 #include <nothofagus.h>
 #include "entity/drawable.h"
+#include "entity/box/ibox.h"
 #include "entity/box/box.h"
+#include "entity/box/compound_box.h"
 #include "colors.h"
 #include "entity/fighter/state/fighter_state.h"
 #include "entity/fighter/fighter_keys.h"
 #include <rusty_audio.h>
+#include <vector>
 
 
 namespace bf
@@ -41,6 +44,11 @@ namespace bf
 
         void updateTargetDirection();
 
+        IBox **legs();
+
+
+        void playStepSound();
+
     private:
         float mMaxSpeed = 1.0f / 32.0f;
         glm::vec4 mColor = Colors::cyan;
@@ -49,32 +57,22 @@ namespace bf
         Fighter *mTarget = nullptr;
         glm::vec2 mViewDirection = {1, 0};
 
-        Box mHead  = Box({0, 0}, 4.0, 4.0);
-        Box mNeck  = Box({0, 0}, 2.0, 3.0);
+        CompoundBox mMainBody;
 
-        Box mChest = Box({0, 0}, 6.0, 15.0);
+        CompoundBox mLeftLeg;
+        CompoundBox mRightLeg;
+        IBox* mLegs[2] = {&mLeftLeg, &mRightLeg};
 
-        Box mLeftLeg = Box({0, 0}, 2.0, 15.0);
-        Box mRightLeg = Box({0, 0}, 2.0, 15.0);
+        CompoundBox mLeftArm;
+        CompoundBox mRightArm;
 
-        Box mLeftArm = Box({0, 0}, 12.0, 2.0);
-        Box mRightArm = Box({0, 0}, 12.0, 2.0);
-
-        std::vector<std::tuple<Box*, glm::vec2>> mBody = {
-            {&mHead,  {0, 15 + 7.5 + 1.5 + 2.0}},
-            {&mNeck,  {0, 15 + 7.5 + 1.5}},
-
-            {&mLeftArm, {3.0, 15 + 6.0}},
-            {&mRightArm, {9.0, 15 + 3.0}},
-
-            {&mChest, {0, 15}},
-
-            {&mLeftLeg, {-1.1, 0}},
-            {&mRightLeg, {1.1, 0}}
-        };
+        std::vector<std::tuple<IBox*, glm::vec2>> mBody;
 
         RustyAudio::Buffer attackSoundBuffer;
         RustyAudio::Player attackSoundPlayer;
+
+        RustyAudio::Buffer stepSoundBuffer;
+        RustyAudio::Player stepSoundPlayer;
 
         void initSoundPlayer();
     };

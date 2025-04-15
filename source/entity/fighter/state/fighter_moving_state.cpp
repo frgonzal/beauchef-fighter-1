@@ -2,18 +2,32 @@
 #include "entity/fighter/state/fighter_moving_state.h"
 #include "entity/fighter/state/fighter_standing_state.h"
 #include "entity/fighter/fighter.h"
+#include "entity/box/ibox.h"
+#include <iostream>
 
 
 
 namespace bf
 {
     FighterMovingState::FighterMovingState(FighterState *prevState) 
-        : FighterState(prevState) {}
+        : FighterState(prevState) 
+    {}
 
     void FighterMovingState::update(float deltaTime)
     {
         mPosition += mVelocity * deltaTime;
         mFighter->updateTargetDirection();
+
+        mAnimationTimeElapsed += deltaTime;
+        if (mAnimationTimeElapsed >= mAnimationMillisecondsDuration)
+        {
+            std::cout << "Switching legs" << std::endl;
+            mFighter->legs()[mCurrentLeg]->stopAnimation();
+            mAnimationTimeElapsed = 0.0f;
+            mCurrentLeg = (mCurrentLeg + 1) % 2;
+            mFighter->legs()[mCurrentLeg]->playAnimation();
+            mFighter->playStepSound();
+        }
     }
 
     bool FighterMovingState::isStanding() const 
@@ -41,6 +55,7 @@ namespace bf
         mVelocity += velocity;
         if (mVelocity == glm::vec2(0, 0))
         {
+            mFighter->legs()[mCurrentLeg]->stopAnimation();
             mFighter->setState(std::make_unique<FighterStandingState>(this));
         }
     }

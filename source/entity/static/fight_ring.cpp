@@ -24,11 +24,11 @@ namespace bf
 
     void FightRing::update(Nothofagus::Canvas& canvas, float deltaTime)
     {
-        throw std::runtime_error("Not implemented yet.");
+        return;
     }
 
     void FightRing::moveEntityInsideLimits(Fighter& fighter)
     {
-        fighter.moveInsideLimits(mInnerBox.getBottomLeft(), mInnerBox.getTopRight());
+        fighter.moveInsideLimits(mInnerBox.bottomLeft(), mInnerBox.topRight());
     }
 }

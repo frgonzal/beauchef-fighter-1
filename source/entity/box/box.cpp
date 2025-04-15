@@ -5,6 +5,7 @@
 #include <format>
 #include "entity/collidable.h"
 #include "entity/box/compound_box.h"
+#include "colors.h"
 
 
 
@@ -15,6 +16,7 @@ namespace bf
         glm::vec2 halfSize = {width / 2.0f, height / 2.0f};
         mBottomLeft = position - halfSize;
         mTopRight = position + halfSize;
+        mStaticDimension = {width, height};
     }
 
     void Box::addToCanvas(Nothofagus::Canvas& canvas)
@@ -29,6 +31,7 @@ namespace bf
     {
         Nothofagus::Bellota &bellota = canvas.bellota(mBellotaId);
         bellota.transform().location() = getCenter();
+        bellota.transform().scale() = mTopRight - mBottomLeft;
     }
 
 
@@ -47,25 +50,17 @@ namespace bf
         return Nothofagus::Texture({1, 1}, mColor);
     }
 
-    Box& Box::setPosition(const glm::vec2& center)
+    void Box::setPosition(const glm::vec2& center)
     {
         glm::vec2 halfSize = getCenter() - mBottomLeft;
-        mBottomLeft = center - halfSize;
-        mTopRight = center + halfSize;
-        return *this;
+        mBottomLeft = center - halfSize + mCurrentOffset;
+        mTopRight = center + halfSize + mCurrentOffset;
     }
 
 
     glm::vec2 Box::getCenter() const
     {
         return (mBottomLeft + mTopRight) / 2.0f;
-    }
-
-    Box& Box::operator+=(const glm::vec2 &point)
-    {
-        mBottomLeft += point;
-        mTopRight += point;
-        return *this;
     }
 
     bool Box::collides(const Collidable *other) const
@@ -103,25 +98,29 @@ namespace bf
         return mTopRight - mBottomLeft;
     }
 
-    glm::vec2 Box::getBottomLeft() const
+    glm::vec2 Box::bottomLeft() const
     {
         return mBottomLeft;
     }
 
-    glm::vec2 Box::getTopRight() const
+    glm::vec2 Box::topRight() const
     {
         return mTopRight;
     }
 
-    Box& Box::setColor(const glm::vec4& color)
+    void Box::setColor(const Color &color)
     {
         mColor = color;
-        return *this;
     }
 
     void Box::reflectOverYAxis()
     {
-        // its a box, so no need to reflect over its own axis
+        for(int i = 0; i < mAnimations.size(); ++i)
+        {
+            auto [offset, width, height] = mAnimations[i];
+            mAnimations[i] = {glm::vec2{-offset.x, offset.y}, width, height};
+        }
+        mCurrentOffset.x = -mCurrentOffset.x;
     }
 
     void Box::reflectOverYAxis(const float xPosition)
@@ -129,5 +128,47 @@ namespace bf
         float xLeft = mBottomLeft.x;
         mBottomLeft.x = 2 * xPosition - mTopRight.x;
         mTopRight.x = 2 * xPosition - xLeft;
+
+        for(int i = 0; i < mAnimations.size(); ++i)
+        {
+            auto [offset, width, height] = mAnimations[i];
+            mAnimations[i] = {glm::vec2{2 * xPosition - offset.x, offset.y}, width, height};
+        }
+        mCurrentOffset.x = 2 * xPosition - mCurrentOffset.x;
+    }
+
+    void Box::playAnimation()
+    {
+        std::cout << "Play animation" << std::endl;
+        if (mAnimations.empty()) return;
+        if (mCurrentOffset != glm::vec2{0, 0}) stopAnimation();
+
+        auto [offset, width, height] = mAnimations.back();
+        std::cout << "offset: " << offset.x << ", " << offset.y << std::endl;
+
+        glm::vec2 position = getCenter() + offset;
+        mBottomLeft = position - glm::vec2(width / 2.0f, height / 2.0f);
+        mTopRight   = position + glm::vec2(width / 2.0f, height / 2.0f);
+        std::cout << "mBottomLeft: " << mBottomLeft.x << ", " << mBottomLeft.y << std::endl;
+        std::cout << "mTopRight: " << mTopRight.x << ", " << mTopRight.y << std::endl;
+
+        mCurrentOffset = offset;
+    }
+
+    void Box::stopAnimation()
+    {
+        const float width = mStaticDimension.x;
+        const float height = mStaticDimension.y;
+
+        const glm::vec2 position = getCenter() - mCurrentOffset;
+        mBottomLeft = position - glm::vec2(width / 2.0f, height / 2.0f);
+        mTopRight   = position + glm::vec2(width / 2.0f, height / 2.0f);
+
+        mCurrentOffset = {0, 0};
+    }
+
+    void Box::addAnimation(glm::vec2 offset, float width, float height)
+    {
+        mAnimations.push_back({offset, width, height});
     }
 }

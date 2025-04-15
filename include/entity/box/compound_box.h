@@ -5,11 +5,12 @@
 #include <vector>
 #include "entity/collidable.h"
 #include "entity/reflectable.h"
+#include "ibox.h"
 
 
 namespace bf
 {
-    class CompoundBox : public Drawable, public Collidable, public Reflectable
+    class CompoundBox : public IBox
     {
     public:
         CompoundBox() = default;
@@ -28,12 +29,21 @@ namespace bf
          * @brief Set the new center of the compound box.
          * @param newPosition The new position of the compound box.
          */
-        CompoundBox& setPosition(const glm::vec2& newPosition);
+        void setPosition(const glm::vec2& newPosition);
 
         const std::vector<Box>& getBoxes() const;
 
         void reflectOverYAxis() override;
         void reflectOverYAxis(const float xPosition) override;
+
+        /** 
+         * @brief Set the color of the compound box.
+         * @param color The new color of the compound box.
+         */
+        void setColor(const glm::vec4& color) override;
+
+        void playAnimation() override;
+        void stopAnimation() override;
 
     private:
         glm::vec2 mPosition = {0, 0};
