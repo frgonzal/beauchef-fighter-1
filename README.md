@@ -9,13 +9,13 @@ submodule update --init --recursive
 ```
 
 
-## Compile vs CMake
+## Compile VS CMake
 ```
 cd build
 cmake ..
 ```
 
-## Compile vs Presets
+## Compile VS Presets
 ```
 cmake --preset vs-release
 ```
