@@ -13,6 +13,7 @@ namespace bf
         virtual bool isRunning() const = 0;
         virtual bool hasFinished() const = 0;
         virtual float getTimeLeft() const = 0;
+        virtual void setWinner() = 0;
 
         void setGameController(GameController* gameController)
         {

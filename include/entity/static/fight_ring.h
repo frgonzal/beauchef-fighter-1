@@ -10,11 +10,13 @@ namespace bf
     class FightRing : public Drawable
     {
     public:
-        FightRing(const glm::vec2 &position, float width, float height);
+        FightRing(float width, float height, float borderWidth);
         ~FightRing() = default;
 
+        void setPosition(const glm::vec2& position) override;
+        void setColor(const Color color) override { /* Dont update color */; }
+        void update(Nothofagus::Canvas& canvas, float deltaTime) override { /* Do nothing */; }
         void addToCanvas(Nothofagus::Canvas& canvas) override;
-        void update(Nothofagus::Canvas& canvas, float deltaTime) override;
 
         void moveEntityInsideLimits(Fighter& fighter);
 

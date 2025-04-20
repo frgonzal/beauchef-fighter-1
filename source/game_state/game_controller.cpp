@@ -1,13 +1,13 @@
 #include "game_controller/game_controller.h"
 #include "game_controller/states/running_state.h"
+#include "game_controller/states/finished_state.h"
 
 
 namespace bf
 {
     GameController::GameController()
     {
-        mCurrentState = std::make_unique<RunningState>(30e3f);
-        mCurrentState->setGameController(this);
+        setState(std::make_unique<RunningState>(30e3f));
     }
 
     void GameController::update(float deltaTime)
@@ -18,20 +18,26 @@ namespace bf
     void GameController::setState(std::unique_ptr<GameState> newState)
     {
         mCurrentState = std::move(newState);
+        mCurrentState->setGameController(this);
     }
 
-    bool GameController::isRunning() const
+    void GameController::setWinner(Fighter* winner)
     {
-        return mCurrentState->isRunning();
+        assert(winner != nullptr && "GameController::setWinner: Winner cannot be null.");
+
+        if (!hasWinner() && winner->isAlive() && mCurrentState->isRunning())
+        {
+            mWinner = winner;
+            mCurrentState->setWinner();
+        }
+        else 
+        {
+            std::cout << "(Warning) GameController::setWinner: Winner is already set or not alive." << std::endl;
+        }
     }
 
-    bool GameController::hasFinished() const
+    void GameController::setOnGameFinishedCallback(std::function<void()> callback)
     {
-        return mCurrentState->hasFinished();
+        mOnGameFinishedCallback = std::move(callback);
     }
-
-    float GameController::getTimeLeft() const
-    {
-        return mCurrentState->getTimeLeft();
-    }
-} // namespace bf
+}

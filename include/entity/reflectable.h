@@ -2,6 +2,12 @@
 
 namespace bf
 {
+    enum Orientation
+    {
+        LEFT,
+        RIGHT,
+    };
+
     class Reflectable
     {
     public:
@@ -16,6 +22,12 @@ namespace bf
          * @brief Reflect the object over the Y-axis at a given position.
          * @param xPosition The X position of the reflection line.
          */
-        virtual void reflectOverYAxis(const float xPosition) = 0;
+        // virtual void reflectOverYAxis(const float xPosition) = 0;
+
+        const Orientation orientation() const { return mOrientation; }
+        Orientation& orientation() { return mOrientation; }
+
+    private:
+        Orientation mOrientation = RIGHT;
     };
 }

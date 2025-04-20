@@ -1,12 +1,9 @@
 #pragma once
 #include "entity/drawable.h"
-#include <nothofagus.h>
-#include "colors.h"
 #include "entity/collidable.h"
 #include "entity/reflectable.h"
-#include "ibox.h"
-#include "ibox.h"
 #include "colors.h"
+#include <nothofagus.h>
 
 
 namespace bf
@@ -15,7 +12,7 @@ namespace bf
      * @brief Class representing a box in the game.
      * This class is used to create and manage a box that can be drawn on the canvas.
      */
-    class Box : public IBox
+    class Box : public Drawable, public Collidable, public Reflectable
     {
     public:
         /** 
@@ -24,48 +21,55 @@ namespace bf
          * @param width The width of the box.
          * @param height The height of the box.
          */
-        Box(const glm::vec2 &position, float width, float height);
         Box() = default;
         ~Box() = default;
+        Box(float width, float height);
 
         void addToCanvas(Nothofagus::Canvas &canvas) override;
         void update(Nothofagus::Canvas &canvas, float deltaTime) override;
         
-        void setPosition(const glm::vec2 &position);
+        void setPosition(const glm::vec2 &position) override;
+        void setDimensions(float width, float height);
 
         bool collides(const Collidable *other) const override;
         bool collidesWithBox(const Box *box) const override;
-        bool collidesWithCompoundBox(const CompoundBox *compoundBox) const override;
 
-        void setColor(const Color &color) override;
+        void setColor(const Color color) override;
 
         Nothofagus::Texture getTexture() const;
         Nothofagus::Bellota getBellota(Nothofagus::TextureId) const;
 
-        glm::vec2 getCenter() const;
-        glm::vec2 getWidth() const;
-        glm::vec2 getHeight() const;
-        glm::vec2 bottomLeft() const;
-        glm::vec2 topRight() const;
+        /** 
+         * @brief Returns the center of the box.
+         * @return The center of the box as a glm::vec2 object.
+         */
+        glm::vec2 center() const;
 
-        void reflectOverYAxis() override;
-        void reflectOverYAxis(const float xPosition) override;
+        /** 
+         * @brief Returns the current position of the box.
+         * @return The current position of the box as a glm::vec2 object.
+         */
+        inline glm::vec2 position() const { return center(); }
 
+        float width() const { return mTopRight.x - mBottomLeft.x; }
+        float height() const { return mTopRight.y - mBottomLeft.y; }
 
-        void playAnimation() override;
-        void stopAnimation() override;
+        const glm::vec2& bottomLeft() const { return mBottomLeft; }
+        const glm::vec2& topRight() const { return mTopRight; }
 
-        void addAnimation(glm::vec2 offset, float width, float height);
+        void reflectOverYAxis() override {/* Do nothign */;}
 
     private: 
-        glm::vec2 mBottomLeft;
-        glm::vec2 mTopRight;
+        glm::vec2 mBottomLeft = {0, 0};
+        glm::vec2 mTopRight = {0, 0};
+
         Nothofagus::TextureId mTextureId;
         Nothofagus::BellotaId mBellotaId;
-        glm::vec4 mColor = Colors::white;
 
-        glm::vec2 mCurrentOffset = {0, 0};
-        glm::vec2 mStaticDimension;
-        std::vector<std::tuple<glm::vec2, float, float>> mAnimations;
+        bool mHasBellota = false;
+
+        Color mColor = Color::WHITE;
+
+        bool mEnabled = true;
     };
 }

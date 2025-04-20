@@ -1,5 +1,7 @@
 #pragma once
 #include <nothofagus.h>
+#include "entity/actions/action.h"
+#include "entity/sprite/sprite.h"
 
 
 namespace bf
@@ -14,12 +16,6 @@ namespace bf
          * @param prevState Pointer to the previous state of the fighter.
          */
         FighterState() = default;
-
-        /** 
-         * @brief Constructor for FighterState class.
-         * @param prevState Pointer to the previous state of the fighter.
-         */
-        FighterState(const FighterState* prevState);
 
         /** 
          * @brief Destructor for FighterState class.
@@ -59,25 +55,13 @@ namespace bf
         /** 
          * @brief Perform an attack action.
          */
-        virtual void attack() = 0;
+        virtual void attack(Action action) = 0;
 
         /** 
          * @brief Add velocity to the fighter.
          * @param velocity The velocity to add.
          */
-        virtual void addVelocity(const glm::vec2 &velocity) = 0;
-
-        /** 
-         * @brief Get the velocity of the fighter.
-         * @return Reference to the velocity vector.
-         */
-        glm::vec2 &velocity();
-
-        /** 
-         * @brief Get the position of the fighter.
-         * @return Reference to the position vector.
-         */
-        glm::vec2 &position();
+        virtual void addVelocity(const glm::vec2 &velocity);
 
         /** 
          * @brief Overload the output stream operator for FighterState.
@@ -93,14 +77,41 @@ namespace bf
          */
         std::string toString() const;
 
+        /** 
+         * @brief Get the current action of the fighter.
+         * @return The current action of the fighter.
+         */
+        virtual const Action &currentAction() const = 0;
+
+        /** 
+         * @brief Get the current action of the fighter (non-const version).
+         * @return The current action of the fighter.
+         */
+        virtual Action &currentAction() = 0;
+
+        /** 
+         * @brief get the next action of the fighter.
+         * @return The next action of the fighter.
+         */
+        virtual Action getNextAction() = 0;
+
+        /** 
+         * @brief Get the attack boxes of the fighter.
+         * @return The attack boxes of the fighter.
+         */
+        virtual const Sprite &attackBoxes() const = 0;
+
+        /** 
+         * @brief Receive an attack from another fighter.
+         * @param attacker Pointer to the attacking fighter.
+         */
+        virtual void receiveAttack(const Fighter* attacker);
+
+        virtual void startToBlock() {}
+        virtual void stopToBlock() {}
+
     protected:
         /** Pointer to the fighter associated with this state. */
         Fighter* mFighter;
-
-        /** Velocity of the fighter. */
-        glm::vec2 mVelocity;
-
-        /** Position of the fighter. */
-        glm::vec2 mPosition;
     };
 }

@@ -6,28 +6,10 @@
 
 namespace bf
 {
-    FighterState::FighterState(const FighterState* prevState) 
-    {
-        if (prevState)
-        {
-            mPosition = prevState->mPosition;
-            mVelocity = prevState->mVelocity;
-        }
-    }
-
     void FighterState::setFighter(Fighter* fighter) 
     {
+        assert(fighter != nullptr && "FighterState error: Fighter pointer is null.");
         mFighter = fighter;
-    }
-
-    glm::vec2& FighterState::velocity()
-    {
-        return mVelocity;
-    }
-
-    glm::vec2& FighterState::position() 
-    {
-        return mPosition;
     }
 
     std::ostream& operator<<(std::ostream& os, const FighterState& state)
@@ -41,4 +23,17 @@ namespace bf
         return std::string(typeid(*this).name());
     }
 
+    void FighterState::addVelocity(const glm::vec2 &velocity)
+    {
+        assert(mFighter != nullptr && "FighterState error: Fighter pointer is null.");
+        mFighter->velocity() += velocity;
+    }
+
+    void FighterState::receiveAttack(const Fighter* attacker)
+    {
+        assert(mFighter != nullptr && "FighterState error: Fighter pointer is null.");
+        assert(mFighter->collides(&attacker->attackBoxes()) && "FighterState::receiveAttack: Attacker does not collide with fighter's attack boxes.");
+
+        mFighter->setHealth(mFighter->health() - attacker->attackPower());
+    }
 }

@@ -2,7 +2,6 @@
 #include "game_controller/states/finished_state.h"
 
 
-
 namespace bf
 {
     RunningState::RunningState(float timeLeftInMilliseconds) : 
@@ -13,22 +12,17 @@ namespace bf
         mTimeLeft -= deltaTime;
         if (mTimeLeft <= 0.0f)
         {
+            mGameController->onGameFinishedCallback();
             mGameController->setState(std::make_unique<FinishedState>());
         }
     } 
 
-    bool RunningState::isRunning() const
+    void RunningState::setWinner()
     {
-        return true;
-    }
+        assert(mGameController != nullptr && "RunningState::setWinner: GameController is null.");
+        assert(mGameController->hasWinner() && "RunningState::setWinner: Winner is null.");
 
-    bool RunningState::hasFinished() const
-    {
-        return false;
-    }
-
-    float RunningState::getTimeLeft() const
-    {
-        return mTimeLeft;
+        mGameController->onGameFinishedCallback();
+        mGameController->setState(std::make_unique<FinishedState>());
     }
 }

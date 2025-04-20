@@ -8,23 +8,24 @@
 
 namespace bf
 {
-    FightRing::FightRing(const glm::vec2 &position, float width, float height) :
-        mInnerBox(position, width, height),
-        mOuterBox(position, width + 20, height + 20)
+    FightRing::FightRing(float width, float height, float borderWidth) :
+        mOuterBox(width + 2 * borderWidth, height + 2 * borderWidth),
+        mInnerBox(width, height)
     {
-        mInnerBox.setColor(Colors::yellow);
-        mOuterBox.setColor(Colors::brown);
+        mOuterBox.setColor(Color::BROWN);
+        mInnerBox.setColor(Color::YELLOW);
+    }
+
+    void FightRing::setPosition(const glm::vec2& position)
+    {
+        mOuterBox.setPosition(position);
+        mInnerBox.setPosition(position);
     }
 
     void FightRing::addToCanvas(Nothofagus::Canvas& canvas)
     {
         mOuterBox.addToCanvas(canvas);
         mInnerBox.addToCanvas(canvas);
-    }
-
-    void FightRing::update(Nothofagus::Canvas& canvas, float deltaTime)
-    {
-        return;
     }
 
     void FightRing::moveEntityInsideLimits(Fighter& fighter)

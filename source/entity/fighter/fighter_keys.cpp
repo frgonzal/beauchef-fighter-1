@@ -26,13 +26,13 @@ namespace bf
                     Nothofagus::Key::RIGHT, 
                     Nothofagus::Key::UP, 
                     Nothofagus::Key::DOWN, 
-                    Nothofagus::Key::J,
-                    Nothofagus::Key::K,
-                    Nothofagus::Key::L
+                    Nothofagus::Key::_1,
+                    Nothofagus::Key::_2,
+                    Nothofagus::Key::_3
                 );
 
             default:
-                throw std::invalid_argument("Invalid FighterControls value");
+                assert(false && "FighterKeys::getKeys: Invalid controls type.");
         }
     }
 }

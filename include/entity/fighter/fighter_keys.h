@@ -20,9 +20,9 @@ namespace bf
         Nothofagus::Key moveUp;
         Nothofagus::Key moveDown;
 
-        Nothofagus::Key attack;
         Nothofagus::Key block;
-        Nothofagus::Key jump;
+        Nothofagus::Key punch;
+        Nothofagus::Key kick;
 
         static FighterKeys getKeys(FighterControls controls);
 
@@ -32,15 +32,16 @@ namespace bf
             Nothofagus::Key moveRight, 
             Nothofagus::Key moveUp, 
             Nothofagus::Key moveDown, 
-            Nothofagus::Key attack,
-            Nothofagus::Key block,
-            Nothofagus::Key jump
+            Nothofagus::Key punch,
+            Nothofagus::Key kick,
+            Nothofagus::Key block
         ) : moveLeft(moveLeft), 
             moveRight(moveRight), 
             moveUp(moveUp), 
             moveDown(moveDown), 
-            attack(attack), 
-            block(block), 
-            jump(jump) {}
+            punch(punch),
+            kick(kick),
+            block(block)
+        {}
     };
 }

@@ -25,7 +25,11 @@ namespace bf
          */
         virtual bool collides(const Collidable* other) const = 0;
 
+        /**
+         * @brief Check if this collidable object collides with a Box object.
+         * @param box The Box object to check for collision with.
+         * @return true if the objects collide, false otherwise.
+         */
         virtual bool collidesWithBox(const Box* box) const = 0;
-        virtual bool collidesWithCompoundBox(const CompoundBox* compoundBox) const = 0;
     };
 }

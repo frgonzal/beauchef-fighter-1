@@ -1,43 +1,40 @@
 #include "entity/fighter/state/fighter_state.h"
 #include "entity/fighter/state/fighter_standing_state.h"
 #include "entity/fighter/state/fighter_moving_state.h"
+#include "entity/fighter/state/fighter_attack_state.h"
+#include "entity/fighter/state/fighter_block_state.h"
 #include "entity/fighter/fighter.h"
 
 
 namespace bf
 {
-
-    FighterStandingState::FighterStandingState(FighterState *prevState) 
-        : FighterState(prevState) {}
-
     void FighterStandingState::update(float deltaTime)
     {
-        mFighter->updateTargetDirection();
+        mFighter->stopAction();
+        mFighter->updateViewDirection();
     }
 
-    bool FighterStandingState::isStanding() const 
+    void FighterStandingState::attack(Action action) 
     { 
-        return true; 
+        mFighter->setState(std::make_unique<FighterAttackState>(action));
     }
 
-    bool FighterStandingState::isMoving() const 
+    void FighterStandingState::addVelocity(const glm::vec2 &additionalVelocity) 
     { 
-        return false; 
+        mFighter->velocity() += additionalVelocity;
+        if (mFighter->velocity() != glm::vec2(0, 0))
+        {
+            mFighter->setState(std::make_unique<FighterMovingState>());
+        }
     }
 
-    bool FighterStandingState::isAttacking() const 
-    { 
-        return false; 
+    const Sprite &FighterStandingState::attackBoxes() const
+    {
+        return mFighter->leftArm();
     }
 
-    void FighterStandingState::attack() 
+    void FighterStandingState::startToBlock() 
     { 
-        return; 
-    }
-
-    void FighterStandingState::addVelocity(const glm::vec2 &velocity) 
-    { 
-        mVelocity += velocity;
-        mFighter->setState(std::make_unique<FighterMovingState>(this));
+        mFighter->setState(std::make_unique<FighterBlockState>());
     }
 }

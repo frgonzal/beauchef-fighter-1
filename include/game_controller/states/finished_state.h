@@ -11,9 +11,10 @@ namespace bf
         FinishedState() = default;
         ~FinishedState() = default;
 
-        void update(float deltaTime) override;
-        bool isRunning() const override;
-        bool hasFinished() const override;
-        float getTimeLeft() const override;
+        void update(float deltaTime) override { }
+        bool isRunning() const override { return false; }
+        bool hasFinished() const override { return true; }
+        float getTimeLeft() const override { return 0.0f; }
+        void setWinner() override;
     };
 }
