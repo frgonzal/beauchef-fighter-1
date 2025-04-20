@@ -5,7 +5,7 @@
 ## Before starting
 ```
 git pull
-submodule update --init --recursive
+git submodule update --init --recursive
 ```
 
 
